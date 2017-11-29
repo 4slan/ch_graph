@@ -16,12 +16,13 @@ typedef struct Date {
 
 FILE *openFile(char *fileName, char *mode);
 bool matchPattern(char *string);
-void messagesPerDay();
-void daysInMonth();
+void messagesPerDay(char *argv1);
+void daysInMonth(char *argv1);
 
 int main(int argc, char *argv[]) {
     printf("---Start\n");
-    //messagesPerDay(argv[1]);
+    messagesPerDay(argv[1]);
+        daysInMonth(argv[1]);
     printf("End---\n");
     return 0;
 }
@@ -89,7 +90,37 @@ void messagesPerDay(char *argv1) {
 }
 
 // Функция вычисляющая количество дней в месяце в которых отправлялись сообщения
-void daysInMonth() {
+void daysInMonth(char *argv1) {
+    char line[100];
+    int count = 0;
     int daysInMonth = 0;
-    
+
+    Date current = {0};
+    Date previous = {0};
+
+    FILE *file;
+    file = openFile(argv1, "r");
+
+    while(fgets(line, 100, file)) {
+        if(matchPattern(line) == true) {
+            sscanf(line, "%2d.%2d.%2d", &current.day, &current.month, &current.year);
+
+            if((current.month != previous.month) || (current.year != previous.year)) {
+                if(count > 0)
+                    printf("%.2d.%.2d [%d-сообщейний]\n", previous.month, previous.year, daysInMonth);
+                previous.day = current.day;
+                previous.month = current.month;
+                previous.year = current.year;
+                daysInMonth = 1;
+            }
+            if(current.month == previous.month)
+                daysInMonth++;
+            else
+                count++;
+        }
+    }
+
+    printf("%.2d.%.2d [%d-сообщейний]\n", previous.month, previous.year, daysInMonth);
+
+    fclose(file);
 }
