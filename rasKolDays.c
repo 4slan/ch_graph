@@ -111,7 +111,8 @@ void daysInMonth(char *argv1) {
                 previous.day = current.day;
                 previous.month = current.month;
                 previous.year = current.year;
-                daysInMonth = 1;
+                daysInMonth = 1
+                count = 1;
             }
             if(current.month == previous.month)
                 daysInMonth++;
