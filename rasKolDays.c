@@ -1,33 +1,6 @@
-/* Данная программа пропустив через себя загруженный файл, позволяет вычеслить количество одинаковых дней
- * Расчёт выводится в консоль
- */
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h> // strlen()
-#include <ctype.h>  // isdigit()
+#include "rasKolDays.h"
 
-typedef enum {false, true} bool;
-typedef struct Date {
-    int day;
-    int month;
-    int year;
-} Date;
-
-FILE *openFile(char *fileName, char *mode);
-bool matchPattern(char *string);
-void messagesPerDay(char *argv1);
-void daysInMonth(char *argv1);
-
-int main(int argc, char *argv[]) {
-    printf("---Start\n");
-    messagesPerDay(argv[1]);
-        daysInMonth(argv[1]);
-    printf("End---\n");
-    return 0;
-}
-
-// Функция открывающая имя файла в заданном режиме
+// Функция открывающая файл в заданном режиме
 FILE *openFile(char *fileName, char *mode) {
     FILE *file;
     file = fopen(fileName, mode);
@@ -49,7 +22,7 @@ bool matchPattern(char *line) {
 // Функция вычисляющая количество сообщений в день
 void messagesPerDay(char *argv1) {
     char line[100];
-    int count = 0, lineNum = 0;
+    int count = 0; // lineNum = 0;
 
     Date current = {0};
     Date previous = {0};
@@ -70,7 +43,7 @@ void messagesPerDay(char *argv1) {
 
             if((current.day != previous.day) || (current.month != previous.month) || (current.year != previous.year)) {
                 if(count > 0)
-                printf("%.2d.%.2d.%.2d [%d-раз]\n", previous.day, previous.month, previous.year, count);
+                    printf("%.2d.%.2d.%.2d [%d-раз]\n", previous.day, previous.month, previous.year, count);
                 previous.day = current.day;
                 previous.month = current.month;
                 previous.year = current.year;
@@ -111,15 +84,17 @@ void daysInMonth(char *argv1) {
                 previous.day = current.day;
                 previous.month = current.month;
                 previous.year = current.year;
-                daysInMonth = 1
                 count = 1;
+                daysInMonth = 1;
             }
             if(current.month == previous.month)
                 daysInMonth++;
+            else
+                count++;
         }
     }
 
-    printf("%.2d.%.2d [%d-сообщейний]\n", previous.month, previous.year, daysInMonth);
+    // printf("%.2d.%.2d [%d-сообщейний]\n", previous.month, previous.year, daysInMonth);
 
     fclose(file);
 }
