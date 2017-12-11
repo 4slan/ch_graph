@@ -33,8 +33,10 @@ void messagesPerDay(char *argv1) {
     // FILE *writeInFile;
     // writeInFile = openFile("dates.txt", "w");
 
+    printf("Дата\tКоличество сообщений\n");
     while(fgets(line, 100, file)) {
         // lineNum++;
+
         if(matchPattern(line) == true) { // Если текушая строка соответствует формату то начинаем расчет
             sscanf(line, "%2d.%2d.%2d", &current.day, &current.month, &current.year); // Извлекаем число, месяц и год сохраняя их в структуру Date current
             // fprintf(writeInFile, "%2d.%2d.%2d\n", current.day, current.month, current.year); // Записываем форматированный вывод c точностью в 2 символа в файл writeInFile (не открыт!)
@@ -43,20 +45,21 @@ void messagesPerDay(char *argv1) {
 
             if((current.day != previous.day) || (current.month != previous.month) || (current.year != previous.year)) {
                 if(count > 0)
-                    printf("%.2d.%.2d.%.2d [%d-раз]\n", previous.day, previous.month, previous.year, count);
+                    printf("%.2d.%.2d.%.2d\t%d\n", previous.day, previous.month, previous.year, count);
                 previous.day = current.day;
                 previous.month = current.month;
                 previous.year = current.year;
                 count = 1;
             }
-            else
-            count++;
+            else {
+                count++;
+            }
         }
         // else
         //     printf("Строка n°%d не соответствует шаблону\n", lineNum);
     }
 
-    printf("%.2d.%.2d.%.2d [%d-раз]\n", current.day, current.month, current.year, count); // Последний из дней
+    printf("%.2d.%.2d.%.2d\t%d\n", current.day, current.month, current.year, count); // Последний из дней
 
     fclose(file);
     // fclose(writeInFile);
@@ -67,6 +70,7 @@ void daysInMonth(char *argv1) {
     char line[100];
     int count = 0;
     int daysInMonth = 0;
+    int totalMessages = 0; // Для вычесления общего количетсва сообщений
 
     Date current = {0};
     Date previous = {0};
@@ -74,13 +78,16 @@ void daysInMonth(char *argv1) {
     FILE *file;
     file = openFile(argv1, "r");
 
+    printf("Месяц\tКоличество сообщений\n");
     while(fgets(line, 100, file)) {
         if(matchPattern(line) == true) {
             sscanf(line, "%2d.%2d.%2d", &current.day, &current.month, &current.year);
 
+            totalMessages++;
+
             if((current.month != previous.month) || (current.year != previous.year)) {
                 if(count > 0)
-                    printf("%.2d.%.2d [%d-сообщейний]\n", previous.month, previous.year, daysInMonth);
+                    printf("%.2d.%.2d\t%d\n", previous.month, previous.year, daysInMonth-1);
                 previous.day = current.day;
                 previous.month = current.month;
                 previous.year = current.year;
@@ -93,8 +100,8 @@ void daysInMonth(char *argv1) {
                 count++;
         }
     }
-
-    // printf("%.2d.%.2d [%d-сообщейний]\n", previous.month, previous.year, daysInMonth);
+    printf("%.2d.%.2d\t%d\n", previous.month, previous.year, daysInMonth-1);
+    printf("Общее количество сообщений = %d\n", totalMessages);
 
     fclose(file);
 }
